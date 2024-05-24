@@ -27,12 +27,27 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - mongodb
 
 networks:
   postgres:
     driver: bridge
   spring:
     driver: bridge
+  mongodb:
+    driver: bridge
+
 volumes:
   postgres:
   pgadmin:
+  mongodb_data:

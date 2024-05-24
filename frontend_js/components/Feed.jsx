@@ -1,3 +1,5 @@
-export const Feed = () => {
+const Feed = () => {
   return <></>;
 };
+
+export default Feed;

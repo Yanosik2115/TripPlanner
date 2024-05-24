@@ -13,8 +13,8 @@ import java.util.Objects;
 @Builder
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 public class Customer {
+
 		@Id
 		@SequenceGenerator(name = "customer_id_sequence",
 				sequenceName = "customer_id_sequence")
