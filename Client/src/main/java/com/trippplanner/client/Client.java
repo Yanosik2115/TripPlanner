@@ -24,4 +24,6 @@ public class Client {
     private String email;
     private String username;
 
+    //todo add image
+
 }
