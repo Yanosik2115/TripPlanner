@@ -1,5 +1,5 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://root:root@localhost:27017/client_base?authSource=admin
+      uri: mongodb://root:root@localhost:27017/share_prompt?authSource=admin
       authentication-database: admin

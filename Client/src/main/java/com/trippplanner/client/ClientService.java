@@ -2,6 +2,7 @@ package com.trippplanner.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClientService {
@@ -29,5 +30,13 @@ public class ClientService {
 
     public boolean clientExistsByEmail(String email) {
         return clientRepository.existsByEmail(email);
+    }
+
+    @Transactional
+    public void updateUserById(String newUsername, String id) {
+        Client user = clientRepository.findClientById(id);
+        user.setUsername(newUsername);
+        System.out.println(user.getEmail() + " updated username to " + user.getUsername() + " successfully.");
+        clientRepository.save(user);
     }
 }

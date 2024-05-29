@@ -14,7 +14,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Builder
 @AllArgsConstructor
-@Document(collection = "clients")
+@Document(collection = "users")
 public class Client {
 
     @Id
@@ -23,6 +23,7 @@ public class Client {
     private String lastName;
     private String email;
     private String username;
+    private String image;
 
     //todo add image
 

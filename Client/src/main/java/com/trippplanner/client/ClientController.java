@@ -33,4 +33,10 @@ public class ClientController {
         return response;
     }
 
+    @PostMapping("/update-client-username")
+    public void updateClientUsername(@RequestParam("id") String id, @RequestParam("newUsername") String newUsername) {
+        log.info("Updating client username with id: {}", id);
+        clientService.updateUserById(newUsername, id);
+    }
+
 }

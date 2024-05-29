@@ -6,8 +6,7 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import User from '@models/user';
 import { connectToDatabase } from '@utils/database';
 import clientPromise from '../../../../utils/db';
-import { use } from 'bcrypt/promises';
-import { randomInt } from 'crypto';
+import {useRouter} from 'next/navigation';
 
 const handler = NextAuth({
   providers: [
@@ -47,12 +46,14 @@ const handler = NextAuth({
 
         // if not, create a new document and save user in MongoDB
         if (!userExists) {
-          console.log("debugggg")
           await User.create({
             email: user.email,
-            username: user.name.replace(' ', '').toLowerCase() + randomInt(1000, 9999),
+            username: '', //user.name.replace(' ', '').toLowerCase() + randomInt(1000, 9999),
             image: user.image,
           });
+
+          const router = useRouter();
+          router.push('/profile/set-username');
         }
 
         return true;
