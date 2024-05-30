@@ -7,18 +7,7 @@ import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
 const Nav = () => {
     const { data: session } = useSession();
-
-    const [providers, setProviders] = useState(null);
     const [toggleDropdown, setToggleDropdown] = useState(false);
-
-    useEffect(() => {
-        const fetchProviders = async () => {
-            const response = await getProviders();
-            setProviders(response);
-        };
-        fetchProviders();
-    }, []);
-
 
     return (<nav className='flex-between w-full mb-16 pt-3'>
         <Link href='/' className='flex gap-2 flex-center'>
@@ -41,7 +30,7 @@ const Nav = () => {
                 </Link>
 
                 <button type={'button'} onClick={signOut} className={'outline-btn'}>
-                    Sign Out
+                    Log Out
                 </button>
 
                 <Link href={'/profile'}>
@@ -54,18 +43,28 @@ const Nav = () => {
                     ></Image>
                 </Link>
             </div>) : (
-                <>
-                    {providers && Object.values(providers).map((provider) => (provider.name === 'Email' && (<button
+                <div className='flex-between space-x-1'>
+                    <Link href='/login'>
+                        <button
                             type={'button'}
                             key={'provider.name'}
-                            onClick={() => signIn(provider.id)}
+                            className={'black_btn'}
+                        >
+                            Log In
+                        </button>
+                    </Link>
+                    <Link href='/signup'>
+                        <button
+                            type={'button'}
+                            key={'provider.name'}
                             className={'black_btn'}
                         >
                             Sign In
-                        </button>)
+                        </button>
+                    </Link>
+                </div>
 
-                    ))}
-                </>)}
+            )}
         </div>
 
         {/*Mobile nav*/}
@@ -113,16 +112,26 @@ const Nav = () => {
                         Sign Out
                     </button>
                 </div>)}
-            </div>) : (<>
-                {providers && Object.values(providers).map((provider) => (provider.name === 'Email' && (<button
-                    type={'button'}
-                    key={'provider.name'}
-                    onClick={() => signIn(provider.id)}
-                    className={'black_btn'}
-                >
-                    Sign In
-                </button>)))}
-            </>)}
+            </div>) : (<div className='flex-between space-x-1'>
+                <Link href='/login'>
+                    <button
+                        type={'button'}
+                        key={'provider.name'}
+                        className={'black_btn'}
+                    >
+                        Log In
+                    </button>
+                </Link>
+                <Link href='/signup'>
+                    <button
+                        type={'button'}
+                        key={'provider.name'}
+                        className={'black_btn'}
+                    >
+                        Sign In
+                    </button>
+                </Link>
+            </div>)}
         </div>
     </nav>);
 };

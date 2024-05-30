@@ -19,12 +19,9 @@ public class Client {
 
     @Id
     private String id;
-    private String firstName;
-    private String lastName;
     private String email;
     private String username;
     private String image;
-
-    //todo add image
+    private String password;
 
 }

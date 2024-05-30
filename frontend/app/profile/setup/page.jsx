@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
-import UsernameForm from '../../../components/UsernameForm';
+import UserSetupForm from '../../../components/UserSetupForm';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
@@ -17,7 +17,7 @@ const UsernamePage = () => {
     return (
         <div>
             <h1>Choose a Username</h1>
-            <UsernameForm onSubmit={handleUsernameSubmit} />
+            <UserSetupForm onSubmit={handleUsernameSubmit} />
         </div>
     );
 };

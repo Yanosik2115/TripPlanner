@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-const UsernameForm = ({ onSubmit }) => {
+const UserSetupForm = ({ onSubmit }) => {
     const [username, setUsername] = useState('');
 
     const handleSubmit = (e) => {
@@ -10,7 +10,7 @@ const UsernameForm = ({ onSubmit }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={'form_input'}>
             <label htmlFor="username">Username:</label>
             <input
                 type="text"
@@ -24,4 +24,4 @@ const UsernameForm = ({ onSubmit }) => {
     );
 };
 
-export default UsernameForm;
+export default UserSetupForm;

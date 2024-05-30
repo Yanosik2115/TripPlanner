@@ -1,30 +1,53 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import EmailProvider from "next-auth/providers/email";
-import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import EmailProvider from 'next-auth/providers/email';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { MongoDBAdapter } from '@auth/mongodb-adapter';
 
 import User from '@models/user';
 import { connectToDatabase } from '@utils/database';
 import clientPromise from '../../../../utils/db';
-import {useRouter} from 'next/navigation';
+import bcrypt from 'bcryptjs';
+import { error } from 'next/dist/build/output/log';
 
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
+      clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
+    CredentialsProvider({
+        name: 'credentials',
+        credentials: {
+          email: { label: 'Email', type: 'email' },
+          password: { label: 'Password', type: 'password' },
+        },
+        async authorize(credentials) {
+          console.log("credentialsasda", credentials)
+
+
+          try {
+            await connectToDatabase();
+
+            const user = await User.findOne({ email: credentials.email });
+            if (!user) {
+              throw new Error('No user found');
+            }
+
+            console.log('user', user)
+
+            const isPasswordMatch = await bcrypt.compare(credentials.password, user.password);
+
+            if (!isPasswordMatch) {
+              throw new Error('Password does not match');
+            }
+            return user;
+          } catch (error) {
+            console.error('Error finding user:', error);
+          }
         },
       },
-      from: process.env.EMAIL_FROM
-    }),
+    ),
   ],
   adapter: MongoDBAdapter(clientPromise),
 
@@ -37,32 +60,58 @@ const handler = NextAuth({
       return session;
     },
     async signIn({ account, profile, user, credentials }) {
+
+      console.log('signIn', account.provider)
+
+      if (account.provider === 'credentials') {
+        console.log('credentialdasdasds', credentials);
+        return true; // Already handled in authorize callback
+      }
+
       try {
         await connectToDatabase();
         // check if user already exists
         const userExists = await User.findOne({ email: user.email });
 
-        console.log(userExists)
+        console.log({ user: userExists });
+        console.log({ credentials: credentials });
 
         // if not, create a new document and save user in MongoDB
         if (!userExists) {
           await User.create({
             email: user.email,
-            username: '', //user.name.replace(' ', '').toLowerCase() + randomInt(1000, 9999),
+            username: user.email.split('@')[0].replace(' ', '').toLowerCase(),
             image: user.image,
+            firstName: '',
+            lastName: '',
+            password: ''
           });
-
-          const router = useRouter();
-          router.push('/profile/set-username');
+        //
+          return {redirect: '/profile/setup'};
         }
 
-        return true;
+
+        return { redirect: '/' };
       } catch (error) {
         console.log('Error checking if user exists: ', error.message);
         return false;
       }
     },
+    async jwt(token, user) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    }
   },
+  pages: {
+    signIn: '/login',
+    register: '/signup',
+    // signOut: '/login',
+    error: '/login/error',
+    // verifyRequest: '/login',
+    // newUser: null,
+  }
 });
 
 export { handler as GET, handler as POST };
