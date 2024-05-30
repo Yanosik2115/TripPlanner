@@ -3,13 +3,14 @@
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import Register from '../../utils/register';
 
 
 const SignUpPage = () => {
   const [formState, setFormState] = useState({
-    firstName: '', lastName: '', username: '', email: '', password: '', image: '',
+    username: '', email: '', password: '',
   });
-
+  const [usernameError, setUsernameError] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
   const handlePasswordChange = (e) => {
@@ -21,9 +22,19 @@ const SignUpPage = () => {
     }
   };
 
-  const handleUsernameChange = (e) => {
+  const usernameCheck = async () => {
+    // Make a request to the server to check if the username exists
+    const res = await fetch(`http://localhost:8080/api/v1/clients/client-exists-by-username?username=${formState.username}`);
+    const data = await res.json();
 
-  }
+    if (data) {
+      setUsernameError('Username already exists');
+      return false;
+    } else {
+      setUsernameError('');
+      return true;
+    }
+  };
 
   return (<section className='login-background'>
     <div className='flex flex-col items-center px-6 py-8 mt-5 '>
@@ -42,7 +53,9 @@ const SignUpPage = () => {
             <input type='username' name='username' id='username' placeholder='Username'
                    className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5'
                    required='' value={formState.username}
-                   onChange={(e) => setFormState({ ...formState, username: e.target.value })}></input>
+                   onChange={(e) => setFormState({ ...formState, username: e.target.value })}
+            ></input>
+            {usernameError && <div className='text-red-500'>{usernameError}</div>}
           </div>
           <div>
             <label htmlFor='email'
@@ -71,7 +84,13 @@ const SignUpPage = () => {
           <button
             type={'submit'}
             key={'provider.name'}
-            onClick={() => signIn('credentials', { email, password })}
+            onClick={async () => {
+              const res = await usernameCheck();
+              console.log("res", res);
+              if (res) {
+                await Register(formState);
+              }
+            }}
             className={'w-full submit_btn'}
           >
             Sign up

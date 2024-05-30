@@ -17,11 +17,12 @@ import java.util.Objects;
 @Document(collection = "users")
 public class Client {
 
-    @Id
-    private String id;
-    private String email;
-    private String username;
-    private String image;
-    private String password;
+		@Id
+		private String id;
+		private String email;
+		private String username;
+		private String image;
+		private String password;
+		private Boolean isVerified;
 
 }

@@ -1,4 +1,4 @@
 package com.trippplanner.client;
 
-public record ClientRegistrationRequest(String firstName, String lastName, String email, String username, String password) {
+public record ClientRegistrationRequest(String email, String username, String password, Boolean isVerified) {
 }

@@ -23,6 +23,10 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const User = models.User || model('User', UserSchema);

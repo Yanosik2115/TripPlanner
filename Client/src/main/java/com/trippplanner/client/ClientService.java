@@ -19,11 +19,10 @@ public class ClientService {
 
     public void registerClient(ClientRegistrationRequest request) {
         Client client = Client.builder()
-                .firstName(request.firstName())
-                .lastName(request.lastName())
                 .email(request.email())
                 .username(request.username())
-                .password(bCryptPasswordEncoder.encode(request.password()))
+                .password(request.password())
+                .isVerified(false)
                 .build();
 
         clientRepository.save(client);
@@ -36,6 +35,7 @@ public class ClientService {
     public boolean clientExistsByEmail(String email) {
         return clientRepository.existsByEmail(email);
     }
+
 
     @Transactional
     public void updateUserById(String newUsername, String id) {
