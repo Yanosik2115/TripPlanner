@@ -2,9 +2,9 @@ package com.tripplanner.authorization.auth;
 
 
 import com.tripplanner.authorization.config.JwtService;
-import com.tripplanner.authorization.user.Role;
-import com.tripplanner.authorization.user.User;
-import com.tripplanner.authorization.user.UserRepository;
+import com.tripplanner.user.Role;
+import com.tripplanner.user.User;
+import com.tripplanner.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,6 +1,6 @@
 package com.tripplanner.authorization.config;
 
-import com.tripplanner.authorization.user.UserRepository;
+import com.tripplanner.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

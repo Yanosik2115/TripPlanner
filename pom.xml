@@ -8,8 +8,9 @@
     <name>Archetype - TripPlanner</name>
     <url>http://maven.apache.org</url>
     <modules>
-        <module>Client</module>
+        <module>User</module>
         <module>Authorization</module>
+        <module>eureka-server</module>
     </modules>
 
     <properties>
