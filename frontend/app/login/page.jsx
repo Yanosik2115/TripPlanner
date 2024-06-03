@@ -2,13 +2,14 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { getProviders } from 'next-auth/react';
+import { getProviders, useSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
 
 const LoginPage = () => {
   const [providers, setProviders] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchProviders = async () => {
@@ -18,6 +19,10 @@ const LoginPage = () => {
     fetchProviders();
   }, []);
 
+  useEffect(() => {
+    console.log('session', session?.user);
+  }, [session]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,6 +31,7 @@ const LoginPage = () => {
       password: password,
       callbackUrl: '/',
     });
+
   };
 
 

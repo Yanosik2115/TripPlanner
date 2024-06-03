@@ -32,8 +32,6 @@ const handler = NextAuth({
               throw new Error('No user found');
             }
 
-            console.log('user', user);
-
             const isPasswordMatch = await bcrypt.compare(credentials.password, user.password);
 
             if (!isPasswordMatch) {
@@ -59,11 +57,8 @@ const handler = NextAuth({
       return session;
     },
     async signIn({ account, profile, user, credentials }) {
-
-      console.log('signIn', account.provider);
-
       if (account.provider === 'credentials') {
-        console.log('credentialdasdasds', credentials);
+        user.id = user._id.toString();
         return true; // Already handled in authorize callback
       }
 
@@ -81,14 +76,10 @@ const handler = NextAuth({
             email: user.email,
             username: user.email.split('@')[0].replace(' ', '').toLowerCase(),
             image: user.image,
-            firstName: '',
-            lastName: '',
-            password: '',
           });
-          //
+
           return { redirect: '/profile/setup' };
         }
-
 
         return { redirect: '/' };
       } catch (error) {
@@ -103,13 +94,14 @@ const handler = NextAuth({
       return token;
     },
   },
+  async session(session, token) {
+    session.user.id = token.id;
+    return session;
+  },
   pages: {
     signIn: '/login',
     register: '/signup',
-    // signOut: '/login',
     error: '/login/error',
-    // verifyRequest: '/login',
-    // newUser: null,
   },
 });
 
