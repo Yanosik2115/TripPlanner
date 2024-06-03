@@ -23,24 +23,23 @@ const handler = NextAuth({
           password: { label: 'Password', type: 'password' },
         },
         async authorize(credentials) {
-          console.log("credentialsasda", credentials)
-
 
           try {
             await connectToDatabase();
 
-            const user = await User.findOne({ email: credentials.email });
+            const user = await User.findOne({ email: credentials.email }).select('+password');
             if (!user) {
               throw new Error('No user found');
             }
 
-            console.log('user', user)
+            console.log('user', user);
 
             const isPasswordMatch = await bcrypt.compare(credentials.password, user.password);
 
             if (!isPasswordMatch) {
               throw new Error('Password does not match');
             }
+
             return user;
           } catch (error) {
             console.error('Error finding user:', error);
@@ -61,7 +60,7 @@ const handler = NextAuth({
     },
     async signIn({ account, profile, user, credentials }) {
 
-      console.log('signIn', account.provider)
+      console.log('signIn', account.provider);
 
       if (account.provider === 'credentials') {
         console.log('credentialdasdasds', credentials);
@@ -84,10 +83,10 @@ const handler = NextAuth({
             image: user.image,
             firstName: '',
             lastName: '',
-            password: ''
+            password: '',
           });
-        //
-          return {redirect: '/profile/setup'};
+          //
+          return { redirect: '/profile/setup' };
         }
 
 
@@ -102,7 +101,7 @@ const handler = NextAuth({
         token.id = user.id;
       }
       return token;
-    }
+    },
   },
   pages: {
     signIn: '/login',
@@ -111,7 +110,7 @@ const handler = NextAuth({
     error: '/login/error',
     // verifyRequest: '/login',
     // newUser: null,
-  }
+  },
 });
 
 export { handler as GET, handler as POST };

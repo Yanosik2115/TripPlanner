@@ -21,10 +21,10 @@ public class ClientService {
         Client client = Client.builder()
                 .email(request.email())
                 .username(request.username())
-                .password(request.password())
+                .password(bCryptPasswordEncoder.encode(request.password()))
                 .isVerified(false)
                 .build();
-
+        System.out.println("New client registered: " + client.toString());
         clientRepository.save(client);
     }
 

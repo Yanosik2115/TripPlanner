@@ -24,7 +24,7 @@ const LoginPage = () => {
     await signIn('credentials', {
       email: email,
       password: password,
-      redirect: '/',
+      callbackUrl: '/',
     });
   };
 
