@@ -1,5 +1,4 @@
-package com.tripplanner.authorization.user;
-
+package com.tripplanner.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

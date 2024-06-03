@@ -1,9 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { signIn } from 'next-auth/react';
 import { useState } from 'react';
-import Register from '../../utils/register';
+import register from '../api/auth/register';
 
 
 const SignUpPage = () => {
@@ -86,9 +85,8 @@ const SignUpPage = () => {
             key={'provider.name'}
             onClick={async () => {
               const res = await usernameCheck();
-              console.log("res", res);
               if (res) {
-                await Register(formState);
+                await register({ username: formState.username, email: formState.email, password: formState.password });
               }
             }}
             className={'w-full submit_btn'}
