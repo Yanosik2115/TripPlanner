@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RegistrationService {
 
-		private final UserService appUserService;
+		private final UserService userService;
 		private final EmailValidator emailValidator;
 		private final ConfirmationTokenService confirmationTokenService;
 		private final EmailSender emailSender;
@@ -37,9 +37,11 @@ public class RegistrationService {
 						.username(request.getUsername())
 						.email(request.getEmail())
 						.password(request.getPassword())
+						.enabled(false)
+						.locked(false)
 						.build();
 
-				String token = appUserService.signUpUser(newUser);
+				String token = userService.signUpUser(newUser);
 
 				String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
 				emailSender.send(
@@ -67,7 +69,7 @@ public class RegistrationService {
 				}
 
 				confirmationTokenService.setConfirmedAt(token);
-				appUserService.enableAppUser(
+				userService.enableUser(
 						confirmationToken.getUser().getEmail());
 				return "confirmed";
 		}

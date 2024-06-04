@@ -49,9 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 						}
 				}
 
-				System.out.println("Filtering request");
-				System.out.println(request);
-
 				filterChain.doFilter(request, response);
 		}
 }

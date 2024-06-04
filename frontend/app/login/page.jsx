@@ -5,12 +5,17 @@ import { useEffect, useState } from 'react';
 import { getProviders, useSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
 import { fetchServiceUrl } from '../../utils/eureka/eurekaClient';
+import { usePathname } from 'next/navigation';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const { data: session } = useSession();
+  const notify = (message) => toast.error(message, {
+    position: 'bottom-left',
+  });
 
   useEffect(() => {
     console.log('session', session?.user);
@@ -20,22 +25,24 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const auth = await fetchServiceUrl('authorization')
-      console.log('auth', auth)
-      const success = await fetch(`${auth}/api/v1/auth/authenticate`, {
+      const auth = await fetchServiceUrl('authorization');
+      const httpAuth = auth.replace('https://', 'http://');
+      const response = await fetch(`${httpAuth}/api/v1/login/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      }).then(res => res.json());
+      });
 
-      if (success) {
-        // Authentication successful, redirect or update state
-        console.log('Authentication Successful');
-      } else {
-        setError('Invalid credentials'); // Example error handling
+      const data = await response.json();
+
+      if (data['errorType']) {
+        console.log('error', data['errorType']);
+        notify(data['errorType']);
       }
+      console.log('response', data);
+
     } catch (err) {
       setError('An error occurred during authentication'); // Example error handling
       console.error(err);
@@ -114,6 +121,8 @@ const LoginPage = () => {
           </form>
         </div>
 
+      </div>
+      <div>
       </div>
     </section>
   );
