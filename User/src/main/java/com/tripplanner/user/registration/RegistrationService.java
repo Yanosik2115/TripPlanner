@@ -1,5 +1,6 @@
 package com.tripplanner.user.registration;
 
+import com.tripplanner.user.Role;
 import com.tripplanner.user.User;
 import com.tripplanner.user.UserService;
 import com.tripplanner.user.email.EmailSender;
@@ -39,6 +40,7 @@ public class RegistrationService {
 						.password(request.getPassword())
 						.enabled(false)
 						.locked(false)
+						.role(Role.USER)
 						.build();
 
 				String token = userService.signUpUser(newUser);

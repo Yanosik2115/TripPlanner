@@ -11,11 +11,9 @@ import { Bounce, toast, ToastContainer } from 'react-toastify';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
   const { data: session } = useSession();
-  const notify = (message) => toast.error(message, {
-    position: 'bottom-left',
-  });
+  const errorMessage = (message) => toast.error(message, {});
+  const successMessage = (message) => toast.success(message, {});
 
   useEffect(() => {
     console.log('session', session?.user);
@@ -38,13 +36,14 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (data['errorType']) {
-        console.log('error', data['errorType']);
-        notify(data['errorType']);
+        errorMessage(data['errorType']);
       }
-      console.log('response', data);
+      else {
+        successMessage('Login successful');
+      }
 
     } catch (err) {
-      setError('An error occurred during authentication'); // Example error handling
+      errorMessage('An error occurred during authentication'); // Example error handling
       console.error(err);
     }
   };

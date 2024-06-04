@@ -2,8 +2,11 @@ package com.tripplanner.user;
 
 import com.tripplanner.user.registration.token.ConfirmationToken;
 import com.tripplanner.user.registration.token.ConfirmationTokenService;
+import com.tripplanner.user.response.ErrorType;
+import com.tripplanner.user.response.ValidationResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -66,4 +69,19 @@ public class UserService implements UserDetailsService {
 		public Optional<User> findByUsername(String username) {
 				return userRepository.findByUsername(username);
 		}
+
+		public ResponseEntity<ValidationResponse> existsUserByEmail(String email) {
+				if(userRepository.existsUserByEmail(email)){
+						return ResponseEntity.ok(new ValidationResponse(false, "User with that email already exists", ErrorType.EMAIL_ALREADY_EXISTS));
+				}
+				return ResponseEntity.ok(new ValidationResponse(true, "User with that email does not exist", null));
+		}
+
+		public ResponseEntity<ValidationResponse> existsUserByUsername(String username) {
+				if(userRepository.existsUserByUsername(username)){
+						return ResponseEntity.ok(new ValidationResponse(false, "User with that username already exists", ErrorType.USERNAME_ALREADY_EXISTS));
+				}
+				return ResponseEntity.ok(new ValidationResponse(true, "User with that username does not exist", null));
+		}
+
 }

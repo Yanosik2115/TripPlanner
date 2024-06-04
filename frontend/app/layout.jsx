@@ -2,6 +2,7 @@ import '@styles/globals.css';
 import Nav from '@components/Nav';
 import Provider from '@components/Provider';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export const metadata = {
   title: 'Promptopia',
   description: 'Promptopia is a platform for writing prompts and stories.',
@@ -18,8 +19,8 @@ const RootLayout = ({ children }) => {
           <main className={'app'}>
             <Nav />
             {children}
-            <ToastContainer />
           </main>
+          <ToastContainer position={"bottom-left"}/>
         </Provider>
       </body>
     </html>

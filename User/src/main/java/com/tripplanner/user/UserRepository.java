@@ -17,7 +17,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 				"SET a.enabled = TRUE WHERE a.email = ?1")
 		int enableUser(String email);
 
-
-
-
+		boolean existsUserByEmail(String email);
+		boolean existsUserByUsername(String username);
 }

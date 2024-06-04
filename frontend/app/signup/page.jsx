@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import register from '../api/auth/register';
+import { fetchServiceUrl } from '../../utils/eureka/eurekaClient';
+import { toast } from 'react-toastify';
 
 
 const SignUpPage = () => {
@@ -11,6 +13,9 @@ const SignUpPage = () => {
   });
   const [usernameError, setUsernameError] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+
+  const errorMessage = (message) => toast.error(message, {});
+  const successMessage = (message) => toast.success(message, {});
 
   const handlePasswordChange = (e) => {
     if (formState.password !== e.target.value) {
@@ -21,17 +26,92 @@ const SignUpPage = () => {
     }
   };
 
+  const handleSubmit = async (e) => {
+    if (await usernameCheck() === false) {
+      return;
+    }
+    if (await emailCheck() === false) {
+      return;
+    }
+
+    try {
+      const auth = await fetchServiceUrl('authorization');
+      const httpAuth = auth.replace('https://', 'http://');
+      const response = await fetch(`${httpAuth}/api/v1/registration`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formState.username,
+          email: formState.email,
+          password: formState.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log('data', data);
+      console.log('response', response);
+
+      if (response.ok) {
+        successMessage('Registration successful');
+      }
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
   const usernameCheck = async () => {
     // Make a request to the server to check if the username exists
-    const res = await fetch(`http://localhost:8080/api/v1/clients/client-exists-by-username?username=${formState.username}`);
-    const data = await res.json();
+    try {
+      const auth = await fetchServiceUrl('authorization');
+      const httpAuth = auth.replace('https://', 'http://');
+      const response = await fetch(`${httpAuth}/api/v1/user/user-exist-by-username?username=${formState.username}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (data) {
-      setUsernameError('Username already exists');
-      return false;
-    } else {
-      setUsernameError('');
+      const data = await response.json();
+      console.log('data username', data);
+
+      if (data['success'] === false) {
+        errorMessage(data['message']);
+        // setUsernameError(data['message'])
+        return false;
+      }
       return true;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const emailCheck = async () => {
+    // Make a request to the server to check if the username exists
+    try {
+      const auth = await fetchServiceUrl('authorization');
+      const httpAuth = auth.replace('https://', 'http://');
+      const response = await fetch(`${httpAuth}/api/v1/user/user-exist-by-email?email=${formState.email}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (data['success'] === false) {
+        errorMessage(data['message']);
+        // setUsernameError(data['message'])
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -83,12 +163,7 @@ const SignUpPage = () => {
           <button
             type={'submit'}
             key={'provider.name'}
-            onClick={async () => {
-              const res = await usernameCheck();
-              if (res) {
-                await register({ username: formState.username, email: formState.email, password: formState.password });
-              }
-            }}
+            onClick={handleSubmit}
             className={'w-full submit_btn'}
           >
             Sign up
