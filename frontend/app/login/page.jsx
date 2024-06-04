@@ -4,11 +4,12 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getProviders, useSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
-import authenticate from '../api/auth/authenticate';
+import { fetchServiceUrl } from '../../utils/eureka/eurekaClient';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -18,7 +19,27 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await authenticate({ email, password })
+    try {
+      const auth = await fetchServiceUrl('Authorization')
+      console.log('auth', auth)
+      const success = await fetch(`${auth}/api/auth/authenticate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      }).then(res => res.json());
+
+      if (success) {
+        // Authentication successful, redirect or update state
+        console.log('Authentication Successful');
+      } else {
+        setError('Invalid credentials'); // Example error handling
+      }
+    } catch (err) {
+      setError('An error occurred during authentication'); // Example error handling
+      console.error(err);
+    }
   };
 
 

@@ -2,7 +2,7 @@ spring:
   application:
     name: Authorization
   datasource:
-    url: jdbc:postgresql://localhost:5432/jwt_security
+    url: jdbc:postgresql://localhost:5432/jwt_user_security
     username: lukasz
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -15,6 +15,7 @@ spring:
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
 
 eureka:
   client:
