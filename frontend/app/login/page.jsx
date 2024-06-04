@@ -20,9 +20,9 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const auth = await fetchServiceUrl('Authorization')
+      const auth = await fetchServiceUrl('authorization')
       console.log('auth', auth)
-      const success = await fetch(`${auth}/api/auth/authenticate`, {
+      const success = await fetch(`${auth}/api/v1/auth/authenticate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

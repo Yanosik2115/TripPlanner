@@ -1,18 +1,20 @@
 package com.tripplanner.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +29,8 @@ public class User implements UserDetails {
 		private String username;
 		private String email;
 		private String password;
+		private Boolean locked = false;
+		private Boolean enabled = false;
 
 		@Enumerated(EnumType.STRING)
 		private Role role;
@@ -58,5 +62,21 @@ public class User implements UserDetails {
 		@Override
 		public boolean isEnabled() {
 				return true;
+		}
+
+		@Override
+		public final boolean equals(Object object) {
+				if (this == object) return true;
+				if (object == null) return false;
+				Class<?> oEffectiveClass = object instanceof HibernateProxy ? ((HibernateProxy) object).getHibernateLazyInitializer().getPersistentClass() : object.getClass();
+				Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+				if (thisEffectiveClass != oEffectiveClass) return false;
+				User user = (User) object;
+				return getId() != null && Objects.equals(getId(), user.getId());
+		}
+
+		@Override
+		public final int hashCode() {
+				return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
 		}
 }
